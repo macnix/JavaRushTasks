@@ -1,7 +1,5 @@
 package com.javarush.task.task20.task2025;
 
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.TreeSet;
 
 /*
@@ -95,11 +93,9 @@ public class Solution {
 
     public static void main(String[] args) {
         Long t0 = System.currentTimeMillis();
-        //int n = 99999999   //1.204
-        //int n = 146511208;
-        //int n = 146511209; //1.978
+
         int n = 999999999; //9.62
-        //int n = 2147483647;//22.338 - 24.887
+
         long[] lst = getNumbers(n);
         Long t1 = System.currentTimeMillis();
         System.out.println("time: " + (t1 - t0) / 1000d + " sec");
