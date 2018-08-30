@@ -17,7 +17,6 @@ public class Solution {
 
     public Solution() {
         this.map = new HashMap<Integer, String>();
-        map.put(index, name);
     }
 
     public static void main(String[] args) throws IOException {

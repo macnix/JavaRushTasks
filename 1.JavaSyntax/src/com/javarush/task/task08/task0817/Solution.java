@@ -8,7 +8,9 @@ import java.util.*;
 
 public class Solution {
     public static HashMap<String, String> createMap() {
-        HashMap<String, String> hm = new HashMap<String, String>();
+        //напишите тут ваш код
+        HashMap<String, String> hm =new HashMap<>();
+
         hm.put("Иванов", "Иван");
         hm.put("Иванидзе", "Иван");
         hm.put("Иваник", "Петр");
@@ -19,30 +21,28 @@ public class Solution {
         hm.put("Тонкий", "Лев");
         hm.put("Пушкин", "Михаил");
         hm.put("Кукушкин", "Сергей");
+
         return hm;
     }
 
-    public static void removeTheFirstNameDuplicates(HashMap<String, String> map) {
-        HashMap<String, String> copy = new HashMap<String, String>(map);
-        for (Map.Entry pair : copy.entrySet()) {
-            int count = 0;
-            String a = (String) pair.getValue();
-            for (Map.Entry pair2 : copy.entrySet()) {
-                if (pair2.getValue().equals(a))
-                    count++;
-            }
-            if (count > 1) {
-                for (int i = 0; i < count; i++) {
-                    removeItemFromMapByValue(map, a);
+    public static void removeTheFirstNameDuplicates(Map<String, String> map) {
+        //напишите тут ваш код
+        ArrayList<String> lst = new ArrayList<String>(map.values());
 
-                }
+        int count;
+        for (String str : lst) {
+            count = 0;
+            for (String str2 : lst) {
+                if (str.equals(str2))
+                    count++;
+                if (count==2) removeItemFromMapByValue (map, str);
             }
         }
-
     }
 
-    public static void removeItemFromMapByValue(HashMap<String, String> map, String value) {
-        HashMap<String, String> copy = new HashMap<String, String>(map);
+    public static void removeItemFromMapByValue(Map<String, String> map, String value) {
+
+        Map<String, String> copy = new HashMap<String, String>(map);
         for (Map.Entry<String, String> pair : copy.entrySet()) {
             if (pair.getValue().equals(value))
                 map.remove(pair.getKey());
@@ -50,6 +50,11 @@ public class Solution {
     }
 
     public static void main(String[] args) {
+     //   HashMap<String, String> hm =  createMap();
+      //  removeTheFirstNameDuplicates (hm);
+
+        //for (Map.Entry <String,String> pair : hm.entrySet())
+          //  System.out.println(pair.getKey()+" "+pair.getValue());
 
     }
 }
