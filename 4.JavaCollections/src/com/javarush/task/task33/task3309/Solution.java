@@ -1,46 +1,76 @@
 package com.javarush.task.task33.task3309;
 
+import org.w3c.dom.*;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /*
 Комментарий внутри xml
 */
 public class Solution {
     public static String toXmlWithComment(Object obj, String tagName, String comment) {
-        StringWriter writer = new StringWriter();
-        String res = null;
+
         try {
+
             JAXBContext context = JAXBContext.newInstance(obj.getClass());
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            marshaller.marshal(obj, writer);
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            marshaller.marshal(obj, doc);
 
-            String xml = writer.toString();
+            NodeList nodes = doc.getElementsByTagName("*");
 
-            if (xml.indexOf(tagName) > -1)
-                res = xml.replace("<" + tagName + ">", "<!--" + comment + "-->\n" + "<" + tagName + ">");
-            else
-                res = xml;
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Node node = nodes.item(i);
 
-        } catch (JAXBException e) {
+                if (node.getNodeName().equals(tagName)) {
+                    Comment com = doc.createComment(comment);
+                    node.getParentNode().insertBefore(com, node);
+                }
+                replaceTextWithCDATA(node, doc);
+            }
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+            StringWriter sw = new StringWriter();
+            transformer.transform(new DOMSource(doc), new StreamResult(sw));
+            return sw.toString();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return res;
+        return null;
     }
 
-    public static void main(String[] args) {
-//        String s = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><first><second>some string</second><second>some string</second><second><![CDATA[need CDATA because of < and >]]></second><second/></first>";
-//
-//        String comment = "it's a comment";
-//        String tagName = "second";
-//
-//        String res = null;
-//        if (s.indexOf(tagName) > -1)
-//            res = s.replace("<" + tagName + ">", "<!--" + comment + "-->" + "<" + tagName + ">");
-//
-//        System.out.println(res);
+    private static void replaceTextWithCDATA(Node node, Document doc) {
+        if ((node.getNodeType() == 3) && (Pattern.compile("[<>&'\"]").matcher(node.getTextContent()).find())) {
+
+            Node cnode = doc.createCDATASection(node.getNodeValue());
+            node.getParentNode().replaceChild(cnode, node);
+        }
+
+        NodeList list = node.getChildNodes();
+
+        for (int i = 0; i < list.getLength(); i++) {
+            replaceTextWithCDATA(list.item(i), doc);
+        }
     }
 }

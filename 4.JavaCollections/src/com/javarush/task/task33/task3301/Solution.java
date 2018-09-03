@@ -1,5 +1,6 @@
 package com.javarush.task.task33.task3301;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -36,17 +37,28 @@ public class Solution {
         mapper.writeValue(writer, object);
     }
 
+    /*@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property="type")
+    @JsonSubTypes({
+            @JsonSubTypes.Type(value=Cat.class, name="cat"),
+            @JsonSubTypes.Type(value=Dog.class, name="dog")
+    })*/
+    @JsonAutoDetect
     public static class Pet {
-        String name;
+        public String name;
+        Pet () {}
     }
 
+    @JsonAutoDetect
     public static class Cat extends Pet {
-        int age;
-        int weight;
+        Cat (){}
+        public int age;
+        public int weight;
     }
 
+    @JsonAutoDetect
     public static class Dog extends Pet {
-        int age;
-        String owner;
+        public int age;
+        public String owner;
+        public Dog () {}
     }
 }

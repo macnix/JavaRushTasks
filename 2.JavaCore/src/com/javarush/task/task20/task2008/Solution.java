@@ -6,37 +6,41 @@ import java.io.*;
 Как сериализовать Singleton?
 */
 public class Solution implements Serializable {
+
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Singleton instance = Singleton.getInstance();
+
+        ByteArrayOutputStream byteArrayOutputStream = serializeSingletonInstance(instance);
+
+        Singleton singleton = deserializeSingletonInstance(byteArrayOutputStream);
+        Singleton singleton1 = deserializeSingletonInstance(byteArrayOutputStream);
+
+        System.out.println("Проверка ourInstance : " + singleton.getInstance());
+        System.out.println("Проверка ourInstance : " + singleton1.getInstance());
+        System.out.println("=========================================================");
+        System.out.println("Проверка singleton : " + singleton);
+        System.out.println("Проверка singleton1 : " + singleton1);
+    }
+
+    public static ByteArrayOutputStream serializeSingletonInstance(Singleton instance) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        //Serializing the singleton instance
         ObjectOutputStream oos = new ObjectOutputStream(byteArrayOutputStream);
         oos.writeObject(instance);
         oos.close();
 
-        //Recreating the instance by reading the serialized object data add
+        return byteArrayOutputStream;
+    }
+
+    public static Singleton deserializeSingletonInstance(ByteArrayOutputStream byteArrayOutputStream) throws IOException, ClassNotFoundException {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 
         ObjectInputStream ois = new ObjectInputStream(byteArrayInputStream);
         Singleton singleton = (Singleton) ois.readObject();
         ois.close();
 
-        //Recreating the instance AGAIN by reading the serialized object data add
-        byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-
-        ObjectInputStream ois2 = new ObjectInputStream(byteArrayInputStream);
-        Singleton singleton1 = (Singleton) ois2.readObject();
-        ois2.close();
-
-        //The singleton behavior has been broken
-        System.out.println("Instance reference check : " + singleton.getInstance());
-        System.out.println("Instance reference check : " + singleton1.getInstance());
-        System.out.println("=========================================================");
-        System.out.println("Object reference check : " + singleton);
-        System.out.println("Object reference check : " + singleton1);
+        return singleton;
     }
-
 
     public static class Singleton implements Serializable {
         private static Singleton ourInstance;
@@ -51,8 +55,8 @@ public class Solution implements Serializable {
         private Singleton() {
         }
 
-        private Object readResolve() throws ObjectStreamException {
-            return getInstance();
+        private Object readResolve()  {
+            return ourInstance;
         }
     }
 }

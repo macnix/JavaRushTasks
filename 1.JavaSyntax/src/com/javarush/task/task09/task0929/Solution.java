@@ -10,28 +10,17 @@ public class Solution {
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-
-        InputStream fileInputStream = null;
-
-
-
-        for (int i = 0; i< 2; i++) {
-
-            try {
-                fileInputStream = getInputStream(reader.readLine());
-                break;
-
-            } catch (FileNotFoundException e) {
-                System.out.println("Файл не существует.");
-
-                continue;
-
-            }
-
-        }
-
+        String sourceFileName = reader.readLine();
         String destinationFileName = reader.readLine();
 
+        InputStream fileInputStream = null;
+        try {
+            fileInputStream = getInputStream(sourceFileName);
+        } catch (FileNotFoundException e) {
+            System.out.println("Файл не существует.");
+            sourceFileName = reader.readLine();
+            fileInputStream = getInputStream(sourceFileName);
+        }
 
         OutputStream fileOutputStream = getOutputStream(destinationFileName);
 
@@ -44,7 +33,6 @@ public class Solution {
         fileOutputStream.close();
     }
 
-
     public static InputStream getInputStream(String fileName) throws IOException {
         return new FileInputStream(fileName);
     }
@@ -53,3 +41,4 @@ public class Solution {
         return new FileOutputStream(fileName);
     }
 }
+

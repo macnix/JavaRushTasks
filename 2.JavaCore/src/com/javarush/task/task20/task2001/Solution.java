@@ -12,36 +12,43 @@ public class Solution {
     public static void main(String[] args) {
         //исправьте outputStream/inputStream в соответствии с путем к вашему реальному файлу
         try {
-
-            File your_file_name = File.createTempFile("/home/egor/Рабочий стол/robot.txt", null);
+            File your_file_name = File.createTempFile("human", ".txt", new File("d:/"));
             OutputStream outputStream = new FileOutputStream(your_file_name);
             InputStream inputStream = new FileInputStream(your_file_name);
 
-            Human ivanov = new Human("Ivanov", new Asset("home"), new Asset("car"));
+            Human ivanov = new Human("Ivanov", new Asset("home", 999_999.99), new Asset("car", 2999.99));
             ivanov.save(outputStream);
             outputStream.flush();
 
             Human somePerson = new Human();
             somePerson.load(inputStream);
-
-            if (ivanov == somePerson) System.out.println("Yes");
-            else System.out.println("No");
-            //check here that ivanov equals to somePerson - проверьте тут, что ivanov и somePerson равны
             inputStream.close();
+            outputStream.close();
+            //check here that ivanov equals to somePerson - проверьте тут, что ivanov и somePerson равны
+            System.out.println(ivanov.equals(somePerson));
+            your_file_name.deleteOnExit();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             System.out.println("Oops, something wrong with my file");
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             System.out.println("Oops, something wrong with save/load method");
         }
     }
+
     public static class Human {
         public String name;
         public List<Asset> assets = new ArrayList<>();
 
         public Human() {
+        }
+
+        public Human(String name, Asset... assets) {
+            this.name = name;
+            if (assets != null) {
+                this.assets.addAll(Arrays.asList(assets)); //если активы есть, пишем их в список активов
+            }
         }
 
         @Override
@@ -53,46 +60,48 @@ public class Solution {
 
             if (name != null ? !name.equals(human.name) : human.name != null) return false;
             return assets != null ? assets.equals(human.assets) : human.assets == null;
-
         }
 
         @Override
         public int hashCode() {
-            int result = name != null ? name.hashCode() : 0;
-            result = 31 * result + (assets != null ? assets.hashCode() : 0);
+            int result = name != null ? name.hashCode() : 0; //если имя НЕ null, возвращаем хэшкод, иначе 0
+            result = 31 * result + (assets != null ? assets.hashCode() : 0); // 31 * хэш имени + хэш активов
             return result;
         }
 
-        public Human(String name, Asset... assets) {
-            this.name = name;
-            if (assets != null) {
-                this.assets.addAll(Arrays.asList(assets));
-            }
-        }
-
         public void save(OutputStream outputStream) throws Exception {
+            //implement this method - реализуйте этот метод
             PrintWriter printWriter = new PrintWriter(outputStream);
-            printWriter.println(name);
-            int result = assets.size();
-            if (result > 0) {
-                for (Asset a : assets) {
-                    printWriter.println(a.getName());
-                    printWriter.println(a.getPrice());
+            printWriter.println(name);//первая строка сейва
+            if (!assets.isEmpty()) {
+                printWriter.println("yes"); //вторая строка - наличие активов
+                for (Asset asset : assets) {
+                    printWriter.println(asset.getName()); //третья строка
+                    printWriter.println(String.valueOf(asset.getPrice())); //четвертая строка
                 }
             }
-            printWriter.flush();
+            else printWriter.println("no");
+            printWriter.close();
         }
 
         public void load(InputStream inputStream) throws Exception {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            name = bufferedReader.readLine();
-            while (bufferedReader.ready()) {
-                Asset asset = new Asset(bufferedReader.readLine());
-                asset.setPrice(Double.parseDouble(bufferedReader.readLine()));
-                assets.add(asset);
+            //implement this method - реализуйте этот метод
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            this.name = reader.readLine();//1 строка
+            String areThereAssets = reader.readLine();//2 строка
+            if (areThereAssets.equals("yes")) {
+                String line;
+                StringBuilder sb = new StringBuilder();
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append(System.getProperty("line.separator"));//считываю построчно с разделителями строк
+                }
+                String[] splitted = sb.toString().split(System.getProperty("line.separator"));
+
+                for (int i = 0; i < splitted.length; i = i + 2){ //0, 2, 4
+                    assets.add(new Asset(splitted[i], Double.parseDouble(splitted[i+1])));
+                }
             }
-
-
+            reader.close();
         }
     }
 }

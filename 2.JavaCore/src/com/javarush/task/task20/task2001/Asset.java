@@ -1,7 +1,7 @@
 package com.javarush.task.task20.task2001;
 
 public class Asset {
-    public Asset(String name) {
+    public Asset(String name, double v) {
         this.name = name;
     }
 

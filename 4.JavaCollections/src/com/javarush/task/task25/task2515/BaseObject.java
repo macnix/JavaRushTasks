@@ -1,7 +1,5 @@
 package com.javarush.task.task25.task2515;
 
-import java.awt.*;
-
 /**
  * Базовый класс для всех объектов игры.
  */
