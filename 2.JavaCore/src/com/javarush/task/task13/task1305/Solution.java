@@ -4,12 +4,14 @@ package com.javarush.task.task13.task1305;
 Четыре ошибки
 */
 
+
+
 public class Solution {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
-        System.out.println(Hobbie.HOBBIE.toString());
-        System.out.println(new Hobbie().toString());
+        System.out.println(Dream.HOBBY.toString());
+        System.out.println(new Hobby().toString());
 
     }
 
@@ -17,10 +19,10 @@ public class Solution {
     }
 
     interface Dream {
-        static Hobbie HOBBIE = new Hobbie();
+        static Hobby HOBBY = new Hobby();
     }
 
-    static class Hobbie implements Dream {
+    static class Hobby implements Dream, Desire {
         static int INDEX = 1;
 
         @Override
