@@ -1,9 +1,8 @@
 package com.javarush.task.task14.task1419;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,118 +15,80 @@ public class Solution {
 
     public static void main(String[] args) {
         initExceptions();
-        FilenotFound_Demo();
-        Unchecked_Demo();
-        ArrayStoreException_Demo();
-        ClassCastException_Demo();
-        NullPointerException_Demo();
-        NegativeArraySizeException_Demo();
-        NumberFormatException_Demo();
-        StringIndexOutOfBoundsException_Demo();
-        IndexOutOfBoundsException_Demo();
 
         for (Exception exception : exceptions) {
             System.out.println(exception);
         }
     }
 
-    private static void initExceptions() {   //it's first exception
+    private static void initExceptions() {   //the first exception
         try {
             float i = 1 / 0;
 
         } catch (Exception e) {
             exceptions.add(e);
         }
-    }
 
-    private static void FilenotFound_Demo() {
-        try {
-            File file = new File("E://file.txt");
-            FileReader fr = new FileReader(file);
-        } catch (FileNotFoundException e2) {
-            exceptions.add(e2);
-        }
-    }
-
-    private static void Unchecked_Demo() {
-        try {
-            int num[] = {1, 2, 3, 4};
-            System.out.println(num[5]);
-        } catch (ArrayIndexOutOfBoundsException e3) {
-            exceptions.add(e3);
-        }
-    }
-
-    private static void ArrayStoreException_Demo() {
-        try {
-            Object x[] = new String[3];
-            x[0] = new Integer(0);
-        } catch (ArrayStoreException e4) {
-            exceptions.add(e4);
-        }
-    }
-
-
-    private static void ClassCastException_Demo() {
-        String s = null;
-        try {
-            Object x = new Integer(0);
-            s = (String) x;
-        } catch (ClassCastException e5) {
-            exceptions.add(e5);
-        }
-    }
-
-    private static void NullPointerException_Demo() {
-        try {
-            String str = null;
-            System.out.println(str.length());
-        } catch (NullPointerException e6) {
-            exceptions.add(e6);
-        }
-    }
-
-    private static void NegativeArraySizeException_Demo() {
-        int a = -10;
-        int b = -1000;
-        try {
-            int[] asd = new int[a + b];
-
-        } catch (NegativeArraySizeException e7) {
-            exceptions.add(e7);
+        //напишите тут ваш код
+        try { // 2
+            int[] array = {0, 1, 2};
+            System.out.println(array[3]);
+        } catch (ArrayIndexOutOfBoundsException aIOOBE) {
+            exceptions.add(aIOOBE);
         }
 
-    }
-
-    private static void NumberFormatException_Demo() {
-        try {
-            int num = Integer.parseInt("XYZ");
-            System.out.println(num);
-        } catch (NumberFormatException e8) {
-            exceptions.add(e8);
+        try { // 3
+            int number = Integer.parseInt("4.5");
+        } catch (NumberFormatException nFE) {
+            exceptions.add(nFE);
         }
 
-    }
-
-    private static void StringIndexOutOfBoundsException_Demo() {
-        try {
-            String str = "easysteps2buildwebsite";
-            System.out.println(str.length());
-            char c = str.charAt(0);
-            c = str.charAt(40);
-            System.out.println(c);
-        } catch (StringIndexOutOfBoundsException e9) {
-            exceptions.add(e9);
+        try { // 4
+            Object szStr[] = new String[10];
+            szStr[0] = Character.valueOf('*');
+        } catch (ArrayStoreException aSE) {
+            exceptions.add(aSE);
         }
 
-    }
+        try { // 5
+            Object object = Character.valueOf('a');
+            System.out.println((Byte) object);
+        } catch (ClassCastException cCe) {
+            exceptions.add(cCe);
+        }
 
-    private static void IndexOutOfBoundsException_Demo() {
-        int[] a = new int[1];
-        try {
-            int z = a[10];
-        } catch (IndexOutOfBoundsException e10) {
-            exceptions.add(e10);
+        try { // 6
+            int[] array = new int[-5];
+        } catch (NegativeArraySizeException nASE) {
+            exceptions.add(nASE);
+        }
+
+        try { // 7
+            int[] array = new int[5];
+            array = null;
+            int length = array.length;
+        } catch (NullPointerException nPE) {
+            exceptions.add(nPE);
+        }
+
+        try { // 8
+            String s = "ABC";
+            System.out.println(s.charAt(10));
+        } catch (StringIndexOutOfBoundsException sIOOBE) {
+            exceptions.add(sIOOBE);
+        }
+
+        try { // 9
+            Class<?> testClass = Solution.class;
+            Method method = testClass.getMethod("fooMethod", Solution.class);
+        } catch (NoSuchMethodException nSME) {
+            exceptions.add(nSME);
+        }
+
+        try { // 10
+            Class testClass = Class.forName("com.javarush.task.task14.task1419.Class");
+        } catch (ClassNotFoundException cNFE) {
+            exceptions.add(cNFE);
         }
     }
 }
