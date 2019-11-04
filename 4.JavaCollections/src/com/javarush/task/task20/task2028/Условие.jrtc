@@ -1,6 +1,4 @@
-taskKey="com.javarush.task.task20.task2028.big04"
-
-Построй дерево(4)
+taskKey="com.javarush.task.task20.task2028.big04"\n\nПострой дерево(4)
 
 Любое дерево начинается с корня, поэтому не забудь в класс CustomTree добавить поле root типа Entry<String> c модификатором доступа по умолчанию.
 Инициируй его в конструкторе CustomTree, имя (elementName) не важно.
